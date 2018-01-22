@@ -30,13 +30,18 @@ def main():
 
     # for each beatmap save the forum number
     beatmaps = os.listdir(new_path)
-    re = list()
+    beatmap_number_list = list()
     for beatmap in beatmaps:
         beatmap_details = beatmap.split(' ')
         beatmap_number = beatmap_details[0]
-        re.append(beatmap_number)
+        beatmap_number_list.append(beatmap_number)
 
-    print(re)
+    # filter out un-submitted maps that dont have a link
+    for beatmap_number in beatmap_number_list[:]:
+        try:
+            int(beatmap_number)
+        except ValueError:
+            beatmap_number_list.remove(beatmap_number)
 
     # input("write something to close")
 
