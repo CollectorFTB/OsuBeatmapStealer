@@ -4,7 +4,7 @@ import os
 def main():
     # get path and save it for later
     path = os.getcwd()
-    original_path = path
+    beatmaps_file_path = os.path.join(path, 'beatmaps.txt')
 
     # split into directories
     dirs = path.split('\\')
@@ -43,8 +43,26 @@ def main():
         except ValueError:
             beatmap_number_list.remove(beatmap_number)
 
-    # input("write something to close")
+    # make into int instead of string
+    beatmap_number_list = [int(element) for element in beatmap_number_list]
 
+    # sort the result for faster checking later
+    beatmap_number_list = sorted(beatmap_number_list)
+
+    # create links for each of the numbers
+    beatmap_link_list = list()
+    for beatmap_number in beatmap_number_list:
+        beatmap_link_list.append("https://osu.ppy.sh/s/"+str(beatmap_number))
+
+    # open up the file for writing
+    beatmaps_file = open(beatmaps_file_path, 'w')
+
+    # write the links into the file
+    for beatmap_link in beatmap_link_list:
+        beatmaps_file.write(beatmap_link+'\n')
+
+    print(beatmap_link_list)
+    # input("write something to close")
 
 if __name__ == "__main__":
     main()
