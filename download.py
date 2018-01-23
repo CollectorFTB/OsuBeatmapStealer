@@ -47,6 +47,11 @@ def download_beatmaps():
         except ValueError:
             pass
 
+    # remove maps that appear more than once
+    for i in range(len(other_beatmap_numbers)-1):
+        while other_beatmap_numbers[i] == other_beatmap_numbers[i+1]:
+            other_beatmap_numbers.remove(other_beatmap_numbers[i+1])
+
     # create download links for each of the numbers left on his list
     beatmap_link_list = list()
     for beatmap_number in other_beatmap_numbers:
@@ -56,6 +61,6 @@ def download_beatmaps():
     for url in beatmap_link_list:
         webbrowser.open_new_tab(url)
         ##################################################################
-        # if your browser is dying you might want to up this number to 2 #
+        # if your browser is dying you might want to up this number to 3 #
         ##################################################################
-        time.sleep(1.2)
+        time.sleep(2)
