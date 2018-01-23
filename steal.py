@@ -1,9 +1,9 @@
 import os
 
+
 def steal(mode):
     # get path and save it for later
     path = os.getcwd()
-    print(path)
     file_name = ""
     # stealing from yourself
     if mode == 0:
@@ -11,7 +11,6 @@ def steal(mode):
     # stealing for yourself
     elif mode == 1:
         file_name = 'my_beatmaps.txt'
-    beatmaps_file_path = os.path.join(path, file_name)
 
     # split into directories
     dirs = path.split('\\')
@@ -23,13 +22,16 @@ def steal(mode):
             break
 
     # stop it right there
+    out_dirs = dirs[:i + 1]
     dirs = dirs[:i]
 
     # create the path again
     new_path = '\\'.join(dirs)
+    out_path = '\\'.join(out_dirs)
 
     # go into osu dir
     new_path = os.path.join(new_path, 'osu!')
+    beatmaps_file_path = os.path.join(out_path, file_name)
 
     # add Songs to the path
     if os.listdir(new_path).count('Songs') == 1:

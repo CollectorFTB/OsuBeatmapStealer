@@ -8,6 +8,7 @@ def main():
     user_in = ""
     while True:
         user_in = input("Choose an option:\n1. Create your own beatmaps.txt\n2. Download the maps that someone gave you that you don't have\n3. Close the program\n(input should be 1, 2 or 3)\n")
+        print('\n\n\n\n')
         if user_in not in ['1', '2', '3']:
             print("Please try a different input")
         else:
