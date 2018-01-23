@@ -12,20 +12,19 @@ def steal(mode):
         file_name = 'my_beatmaps.txt'
 
     # get the path for the output and osu dir
-    new_path, out_path = get_path()
+    outer_path, inner_path = get_path()
 
-    # go into osu dir
-    new_path = os.path.join(new_path, 'osu!')
-    beatmaps_file_path = os.path.join(out_path, file_name)
+    # create path for the output file
+    beatmaps_file_path = os.path.join(inner_path, file_name)
 
-    # add Songs to the path
-    new_path = os.path.join(new_path, 'Songs')
+    # go into songs dir inside osu dir
+    outer_path = os.path.join(outer_path, 'osu!', 'Songs')
 
     # for each beatmap save the forum number
-    beatmaps = os.listdir(new_path)
+    beatmaps = os.listdir(outer_path)
     beatmap_number_list = [beatmap.split()[0] for beatmap in beatmaps]
 
-    # filter out un-submitted maps that dont have a link
+    # filter out un-submitted maps that don't have a link
     for beatmap_number in beatmap_number_list[:]:
         try:
             int(beatmap_number)

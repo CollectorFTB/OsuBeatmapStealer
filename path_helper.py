@@ -6,9 +6,9 @@ def get_path():
     path = os.getcwd()
 
     # outer dir
-    out_path = path[:path.find('OsuBeatmapStealer')-1]
+    outer_path = path[:path.find('OsuBeatmapStealer')-1]
 
     # inner dir
-    in_path = path[:path.find('OsuBeatmapStealer') + len('OsuBeatmapStealer')]
+    inner_path = path[:path.find('OsuBeatmapStealer') + len('OsuBeatmapStealer')]
 
-    return out_path, in_path
+    return outer_path, inner_path

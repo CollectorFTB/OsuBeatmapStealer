@@ -4,7 +4,7 @@ import time
 from path_helper import get_path
 
 
-def download_beatmaps():
+def download_beatmaps(interval):
     # get path and save it for later
     new_path = get_path()[1]
 
@@ -28,9 +28,7 @@ def download_beatmaps():
     other_beatmap_numbers = list()
 
     # create download links for each of the numbers left on his list
-    beatmap_link_list = ["https://osu.ppy.sh/d/" + str(beatmap_number) for beatmap_number  in other_beatmap_numbers]
-
-    # use request instead
+    beatmap_link_list = ["https://osu.ppy.sh/d/" + str(beatmap_number) for beatmap_number in other_beatmap_numbers]
 
     # start downloading beatmaps
     for url in beatmap_link_list:
@@ -38,4 +36,4 @@ def download_beatmaps():
         ##################################################################
         # if your browser is dying you might want to up this number to 3 #
         ##################################################################
-        time.sleep(2.1)
+        time.sleep(interval)

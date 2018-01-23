@@ -24,8 +24,8 @@ def main():
         print("Finished creating beatmaps.txt, the file should be waiting for you after you close this window\nGive this to other people for them to download your beatmaps!")
     elif user_in == '2':
         steal(1)
-        print('Finished creating my_beatmaps.txt, now downloading the maps you don\'t have ...')
-        download_beatmaps()
+        print('Finished creating my_beatmaps.txt\n\n\n\n')
+        download_beatmaps(float(input('Please enter how fast you want the beatmaps to download (recommended value 2.5):')))
         print('Finished downloading the beatmaps you didn\'t already have!')
     input("Press enter to close the program...")
 
