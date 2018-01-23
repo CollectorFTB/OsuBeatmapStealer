@@ -11,17 +11,8 @@ def steal(mode):
     elif mode == 1:
         file_name = 'my_beatmaps.txt'
 
-    dirs, i = get_path()
-    print(dirs)
-    print(os.path.join(*dirs))
-
-    # stop it right there
-    out_dirs = dirs[:i + 1]
-    dirs = dirs[:i]
-
-    # create the path again
-    new_path = os.path.join(*dirs)
-    out_path = os.path.join(*out_dirs)
+    # get the path for the output and osu dir
+    new_path, out_path = get_path()
 
     # go into osu dir
     new_path = os.path.join(new_path, 'osu!')

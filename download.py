@@ -1,44 +1,25 @@
 import os
 import webbrowser
 import time
+from path_helper import get_path
 
 
 def download_beatmaps():
     # get path and save it for later
-    path = os.getcwd()
-
-    # split into directories
-    dirs = path.split('\\')
-
-    # find the current dir
-    i = 0
-    for i in range(len(dirs)):
-        if dirs[i] == 'OsuBeatmapStealer':
-            break
-
-    # stop it right there
-    dirs = dirs[:i+1]
-
-    # create the path again
-    new_path = '\\'.join(dirs)
+    new_path = get_path()[1]
 
     # get the paths for both the files
     my_beatmaps_path = os.path.join(new_path, 'my_beatmaps.txt')
     other_beatmaps_path = os.path.join(new_path, 'beatmaps.txt')
 
     # open up the file for writing
-    my_beatmaps_file = open(my_beatmaps_path, 'r')
-    other_beatmaps_file = open(other_beatmaps_path, 'r')
+    with open(my_beatmaps_path, 'r') as my_beatmaps_file:
+        # get your numbers
+        my_beatmap_numbers = [int(line.split('/')[-1]) for line in my_beatmaps_file]
 
-    # get your numbers
-    my_beatmap_numbers = list()
-    for line in my_beatmaps_file:
-        my_beatmap_numbers.append(int(line.split('/')[-1]))
-
-    # get other numbers
-    other_beatmap_numbers = list()
-    for line in other_beatmaps_file:
-        other_beatmap_numbers.append(int(line.split('/')[-1]))
+    with open(other_beatmaps_path, 'r') as other_beatmaps_file:
+        # get other numbers
+        other_beatmap_numbers = [int(line.split('/')[-1]) for line in other_beatmaps_file]
 
     # remove your beatmaps from his list and eliminate duplicates
     my_beatmap_numbers = set(my_beatmap_numbers)
@@ -47,9 +28,7 @@ def download_beatmaps():
     other_beatmap_numbers = list()
 
     # create download links for each of the numbers left on his list
-    beatmap_link_list = list()
-    for beatmap_number in other_beatmap_numbers:
-        beatmap_link_list.append("https://osu.ppy.sh/d/" + str(beatmap_number))
+    beatmap_link_list = ["https://osu.ppy.sh/d/" + str(beatmap_number) for beatmap_number  in other_beatmap_numbers]
 
     # use request instead
 

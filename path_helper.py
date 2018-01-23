@@ -5,10 +5,10 @@ def get_path():
     # get path and save it for later
     path = os.getcwd()
 
-    # split into directories
-    dirs = path.split('\\')
+    # outer dir
+    out_path = path[:path.find('OsuBeatmapStealer')-1]
 
-    # find the current dir
-    i = dirs.index('OsuBeatmapStealer')
+    # inner dir
+    in_path = path[:path.find('OsuBeatmapStealer') + len('OsuBeatmapStealer')]
 
-    return dirs, i
+    return out_path, in_path
