@@ -1,68 +1,33 @@
-import os
+from steal import steal
+from download import download_beatmaps
 
 
+# stupid text interaction for baka users
 def main():
-    # get path and save it for later
-    path = os.getcwd()
-    beatmaps_file_path = os.path.join(path, 'beatmaps.txt')
-
-    # split into directories
-    dirs = path.split('\\')
-
-    # find the current dir
-    i = 0
-    for i in range(len(dirs)):
-        if dirs[i] == 'OsuBeatmapStealer':
+    print("~~ https://github.com/CollectorFTB ~~\n\n")
+    user_in = ""
+    while True:
+        user_in = input("Choose an option:\n1. Create your own beatmaps.txt\n2. Download the maps that someone gave you that you don't have\n3. Close the program\n(input should be 1, 2 or 3)\n")
+        if user_in not in ['1', '2', '3']:
+            print("Please try a different input")
+        else:
+            if user_in == '1':
+                print('Creating beatmaps.txt ...')
+            elif user_in == '2':
+                print('Creating my_beatmaps.txt ...')
+            elif user_in == '3':
+                print('Why did you even open this up?')
             break
 
-    # stop it right there
-    dirs = dirs[:i]
-
-    # create the path again
-    new_path = '\\'.join(dirs)
-
-    # go into osu dir
-    new_path = os.path.join(new_path, 'osu!')
-
-    # add Songs to the path
-    if os.listdir(new_path).count('Songs') == 1:
-        new_path = os.path.join(new_path, 'Songs')
-
-    # for each beatmap save the forum number
-    beatmaps = os.listdir(new_path)
-    beatmap_number_list = list()
-    for beatmap in beatmaps:
-        beatmap_details = beatmap.split(' ')
-        beatmap_number = beatmap_details[0]
-        beatmap_number_list.append(beatmap_number)
-
-    # filter out un-submitted maps that dont have a link
-    for beatmap_number in beatmap_number_list[:]:
-        try:
-            int(beatmap_number)
-        except ValueError:
-            beatmap_number_list.remove(beatmap_number)
-
-    # make into int instead of string
-    beatmap_number_list = [int(element) for element in beatmap_number_list]
-
-    # sort the result for faster checking later
-    beatmap_number_list = sorted(beatmap_number_list)
-
-    # create links for each of the numbers
-    beatmap_link_list = list()
-    for beatmap_number in beatmap_number_list:
-        beatmap_link_list.append("https://osu.ppy.sh/s/"+str(beatmap_number))
-
-    # open up the file for writing
-    beatmaps_file = open(beatmaps_file_path, 'w')
-
-    # write the links into the file
-    for beatmap_link in beatmap_link_list:
-        beatmaps_file.write(beatmap_link+'\n')
-
-    print(beatmap_link_list)
-    # input("write something to close")
+    if user_in == '1':
+        steal(0)
+        print("Finished creating beatmaps.txt, the file should be waiting for you after you close this window\nGive this to other people for them to download your beatmaps!")
+    elif user_in == '2':
+        steal(1)
+        print('Finished creating my_beatmaps.txt, now downloading the maps you don\'t have ...')
+        download_beatmaps()
+        print('Finished downloading the beatmaps you didn\'t already have!')
+    input("Press enter to close the program...")
 
 if __name__ == "__main__":
     main()
