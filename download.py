@@ -40,20 +40,18 @@ def download_beatmaps():
     for line in other_beatmaps_file:
         other_beatmap_numbers.append(int(line.split('/')[-1]))
 
-    # remove your beatmaps from his list
-    for beatmap in my_beatmap_numbers:
-        try:
-            other_beatmap_numbers.remove(beatmap)
-        except ValueError:
-            pass
-
-    # remove maps that appear more than once
-    other_beatmap_numbers = list(set(other_beatmap_numbers))
+    # remove your beatmaps from his list and eliminate duplicates
+    my_beatmap_numbers = set(my_beatmap_numbers)
+    other_beatmap_numbers = set(other_beatmap_numbers)
+    other_beatmap_numbers -= my_beatmap_numbers
+    other_beatmap_numbers = list()
 
     # create download links for each of the numbers left on his list
     beatmap_link_list = list()
     for beatmap_number in other_beatmap_numbers:
         beatmap_link_list.append("https://osu.ppy.sh/d/" + str(beatmap_number))
+
+    # use request instead
 
     # start downloading beatmaps
     for url in beatmap_link_list:

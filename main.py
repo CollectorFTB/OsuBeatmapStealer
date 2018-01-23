@@ -2,7 +2,7 @@ from steal import steal
 from download import download_beatmaps
 
 
-# stupid text interaction for baka users
+# stupid text interaction for users
 def main():
     print("~~ https://github.com/CollectorFTB ~~\n\n")
     while True:
