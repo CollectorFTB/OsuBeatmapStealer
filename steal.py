@@ -22,7 +22,7 @@ def steal(mode):
 
     # for each beatmap save the forum number
     beatmaps = os.listdir(outer_path)
-    beatmap_number_list = [beatmap.split()[0] for beatmap in beatmaps]
+    beatmap_number_list = [beatmap[:beatmap.find(' ')] for beatmap in beatmaps]
 
     # filter out un-submitted maps that don't have a link
     for beatmap_number in beatmap_number_list[:]:
