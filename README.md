@@ -29,6 +29,7 @@ Choose option 2 and let your browser start downloading the missing beatmaps for 
 
 You can find the downloaded beatmaps in your computer's downloads folder
 
-(You can close the program at any stage, open the beatmaps it downloaded so far and continue later better just let it run over night or let it work a couple of minutues at a time)
+(You can close the program at any stage, open the beatmaps it downloaded so far and continue later,
+better just let it run over night or let it work a couple of minutues at a time)
 
 
