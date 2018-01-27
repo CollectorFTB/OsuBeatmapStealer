@@ -18,7 +18,7 @@ def steal(mode):
     beatmaps_file_path = os.path.join(inner_path, file_name)
 
     # go into songs dir inside osu dir
-    outer_path = os.path.join(outer_path, 'osu!', 'Songs')
+    outer_path = '\\'.join([outer_path, 'osu!', 'Songs'])
 
     # for each beatmap save the forum number
     beatmaps = os.listdir(outer_path)
