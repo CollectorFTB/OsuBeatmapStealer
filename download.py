@@ -27,7 +27,7 @@ def download_beatmaps(interval):
     other_beatmap_numbers -= my_beatmap_numbers
 
     # delete the my_beatmap.txt file cuz you don't need it anymore
-    os.remove('my_beatmaps.txt')
+    os.remove(my_beatmaps_path)
 
     # create download links for each of the numbers left on his list
     beatmap_link_list = ["https://osu.ppy.sh/d/" + str(beatmap_number) for beatmap_number in other_beatmap_numbers]
