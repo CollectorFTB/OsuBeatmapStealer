@@ -25,7 +25,6 @@ def download_beatmaps(interval):
     my_beatmap_numbers = set(my_beatmap_numbers)
     other_beatmap_numbers = set(other_beatmap_numbers)
     other_beatmap_numbers -= my_beatmap_numbers
-    other_beatmap_numbers = list()
 
     # delete the my_beatmap.txt file cuz you don't need it anymore
     try:
