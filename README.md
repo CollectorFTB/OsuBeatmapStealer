@@ -7,7 +7,7 @@ It lets you create a text file that lists all the beatmaps you have (ranked, unr
 ## How to setup:
 Download the program from this [link](https://drive.google.com/uc?export=download&id=1EE45jg3JzN7UaU32dQxBKwD3OzqsdgGI)
 
-Unzip it and move the unzipped directory next to where your osu is currently installed like this:
+Unzip it and **move the unzipped directory next to where your osu is currently installed like this**:
 ![who even looks at the alt text](https://i.imgur.com/hWw5dbN.png)
 
 
