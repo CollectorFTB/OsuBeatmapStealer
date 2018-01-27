@@ -21,7 +21,9 @@ Before choosing this option **make sure you get a beatmaps.txt file from someone
 
 ![beats me](https://i.imgur.com/wJRQojv.png)
 
-**Make sure you are logged into the osu website other wise you won't be able to download any beatmaps**
+I put a sample beatmaps.txt file inside just to demonstrate where it should be, it has some maps in it and you can try the program with it
+
+**Make sure you are logged into the osu website otherwise you won't be able to download any beatmaps**
 
 Choose option 2 and let your browser start downloading the missing beatmaps for you!
 
