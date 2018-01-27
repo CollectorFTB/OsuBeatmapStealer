@@ -22,8 +22,11 @@ Before choosing this option make sure you get a beatmaps.txt file from someone e
 
 Otherwise the program just wont do anything
 Make sure you are logged into the osu website other wise you won't be able to download any beatmaps
+
 Choose option 2 and let your browser start downloading the missing beatmaps for you!
+
 You can find the downloaded beatmaps in your computer's downloads folder
+
 (You can close the program at any stage, open the beatmaps it downloaded so far and continue later)
 
 
