@@ -1,7 +1,7 @@
 # OsuBeatmapStealer
 
 ### What does it do:
-It lets you create a text file that lists all the beatmaps you have (ranked, unranked, loved etc.), share it with friends, and let them download the beatmaps he has you dont already have.
+It lets you create a text file that lists all the beatmaps you have (ranked, unranked, loved etc.), share it with friends, and let them download the beatmaps you dont already have.
 
 
 ## How to setup:
