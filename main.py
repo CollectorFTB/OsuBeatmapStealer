@@ -25,7 +25,7 @@ def main():
     elif user_in == '2':
         steal(1)
         print('Finished creating my_beatmaps.txt\n\n\n\n')
-        download_beatmaps(float(input('Please enter how fast you want the beatmaps to download (recommended value 2.5):')))
+        download_beatmaps(2.5)  # seconds between each beatmap
         print('Finished downloading the beatmaps you didn\'t already have!')
     input("Press enter to close the program...")
 

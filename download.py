@@ -33,7 +33,4 @@ def download_beatmaps(interval):
     # start downloading beatmaps
     for url in beatmap_link_list:
         webbrowser.open_new_tab(url)
-        ##################################################################
-        # if your browser is dying you might want to up this number to 3 #
-        ##################################################################
         time.sleep(interval)
