@@ -19,6 +19,7 @@ Creates a file called beatmaps.txt that lists all the beatmaps you have. Share t
 ### Option 2:
 Before choosing this option make sure you get a beatmaps.txt file from someone else and put it inside of the directory like so:
 ![beats me](https://i.imgur.com/58lI8y5.png)
+
 Otherwise the program just wont do anything
 Make sure you are logged into the osu website other wise you won't be able to download any beatmaps
 Choose option 2 and let your browser start downloading the missing beatmaps for you!
