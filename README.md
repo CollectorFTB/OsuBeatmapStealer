@@ -17,9 +17,11 @@ Go inside the directory OsuBeatmapStealer and run the main.exe file inside of th
 ### Option 1:
 Creates a file called beatmaps.txt that lists all the beatmaps you have. Share this with others so they can download your beatmaps
 ### Option 2:
-Before choosing this option make sure you get a beatmaps.txt file from someone else and put it inside of the directory like so, otherwise the program just wont do anything:
+Before choosing this option **make sure you get a beatmaps.txt file from someone else and put it inside of the directory like so**, otherwise the program just wont do anything:
+
 ![beats me](https://i.imgur.com/wJRQojv.png)
-*Make sure you are logged into the osu website other wise you won't be able to download any beatmaps*
+
+**Make sure you are logged into the osu website other wise you won't be able to download any beatmaps**
 
 Choose option 2 and let your browser start downloading the missing beatmaps for you!
 
