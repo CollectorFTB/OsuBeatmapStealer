@@ -9,7 +9,7 @@ Download the program from this [link](https://drive.google.com/uc?export=downloa
 
 Unzip it and move the unzipped directory next to where your osu is currently installed like this:
 ![who even looks at the alt text](https://i.imgur.com/hWw5dbN.png)
-(make sure inside the unzipped folder there is a single shortcut and a single folder)
+
 
 
 ## How to use:
