@@ -1,7 +1,7 @@
 from os.path import join
 from os import remove
-import webbrowser
-import time
+from webbrowser import open_new_tab
+from time import sleep
 from path_helper import get_path
 
 
@@ -35,5 +35,5 @@ def download_beatmaps(interval):
 
     # start downloading beatmaps
     for url in beatmap_link_list:
-        webbrowser.open_new_tab(url)
-        time.sleep(interval)
+        open_new_tab(url)
+        sleep(interval)
