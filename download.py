@@ -7,6 +7,7 @@ from time import sleep
 from webbrowser import open_new_tab
 import re
 from requests import Session
+import requests
 
 import config
 from path_helper import get_path
@@ -36,8 +37,7 @@ def download_beatmaps(interval):
 
     # delete the my_beatmap.txt file cuz you don't need it anymore
     remove(my_beatmaps_path)
-
-    osu_session = Osu_Session(os.join(new_path,"..","osu","Songs")) #TODO:switch to actual song library
+    osu_session = Osu_Session(os.path.join(new_path,"..","osu!","Songs")) #TODO:switch to actual song library
     osu_session.download_beatmap_list(other_beatmap_numbers)
 
 class Osu_Session():
@@ -68,17 +68,20 @@ class Osu_Session():
     def attached_file_name(response):
         header = response.headers['Content-Disposition']
         #'attachment;filename="80 Ai Otsuka - Sakuranbo.osz";'
-        return re.search("filename=(.*).osz;",header).group(0)
+        print(header)
+        return re.search('filename="(.*).osz";',header).group(1)
         #'80 Ai Otsuka - Sakuranbo'
 
     def download_beatmap(self, beatmap_number):
         try:
             download = self.session.get(self._endpoint(
                 "beatmapsets", str(beatmap_number), "download"))
-            print(download.headers)
+            download.raise_for_status()
             with tempfile.NamedTemporaryFile(suffix=".zip") as f:
                 f.write(download.content)
                 self.extract_beatmap(f, self.attached_file_name(download))
+        except requests.exceptions.HTTPError:
+            print("Beatmap {} does not exist".format(beatmap_number))
         except KeyError:
             print("Login expiried/failed")
             self._login()
@@ -88,7 +91,8 @@ class Osu_Session():
 
     def download_beatmap_list(self, beatmap_list):
         for beatmap in beatmap_list:
-            download_beatmaps(beatmap)
+            print("downloading " + str(beatmap))
+            self.download_beatmap(beatmap)
 
     def extract_beatmap(self, beatmap_file, beatmap_name):
         zipmap = zipfile.ZipFile(beatmap_file)
@@ -99,3 +103,8 @@ class Osu_Session():
             print("beatmap already exists")
             raise
         zipmap.extractall(path=beatmap_dir)
+
+if __name__ == '__main__':
+    sesh = Osu_Session(os.getcwd())
+    sesh.download_beatmap(85)
+    sesh.download_beatmap(109570)
