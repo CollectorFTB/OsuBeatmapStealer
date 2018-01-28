@@ -1,7 +1,14 @@
-from os.path import join
+import os
+import tempfile
+import zipfile
 from os import remove
-from webbrowser import open_new_tab
+from os.path import join
 from time import sleep
+from webbrowser import open_new_tab
+import re
+from requests import Session
+
+import config
 from path_helper import get_path
 
 
@@ -30,10 +37,66 @@ def download_beatmaps(interval):
     # delete the my_beatmap.txt file cuz you don't need it anymore
     remove(my_beatmaps_path)
 
-    # create download links for each of the numbers left on his list
-    beatmap_link_list = ["https://osu.ppy.sh/d/" + str(beatmap_number) for beatmap_number in other_beatmap_numbers]
+    osu_session = Osu_Session(os.join(new_path,"..","osu","Songs")) #TODO:switch to actual song library
+    osu_session.download_beatmap_list(other_beatmap_numbers)
 
-    # start downloading beatmaps
-    for url in beatmap_link_list:
-        open_new_tab(url)
-        sleep(interval)
+class Osu_Session():
+    def __init__(self, songs_dir):
+        self.osu = "https://osu.ppy.sh"
+        self.songs_dir = songs_dir
+        self.session = Session()
+        self._form = dict(config.DUMMY)
+        self._login()
+
+    def _login(self):
+        self.session.get(self._endpoint("home")) #get XSRF-TOKEN to prove we're not a malicous phishing program
+        pst = self.session.post(self._endpoint("session"),data=self.form)
+
+    @property
+    def form(self):
+        self._refresh_form()
+        return self._form
+
+    def _refresh_form(self):
+        self._form['_token'] = self.session.cookies['XSRF-TOKEN']
+
+    def _endpoint(self, *args):
+        ret= "/".join([self.osu] + list(args))
+        print(ret)
+        return ret
+
+    @staticmethod
+    def attached_file_name(response):
+        name = response.headers['Content-Disposition']
+        #'attachment;filename="80 Ai Otsuka - Sakuranbo.osz";'
+        return os.path.splitext(name[name.find("filename=")+len("filename=")+1:name.rfind(";")-1])[0]
+        #'80 Ai Otsuka - Sakuranbo'
+
+    def download_beatmap(self, beatmap_number):
+        try:
+            download = self.session.get(self._endpoint(
+                "beatmapsets", str(beatmap_number), "download"))
+            print(download.headers)
+            with tempfile.NamedTemporaryFile(suffix=".zip") as f:
+                f.write(download.content)
+                self.extract_beatmap(f, self.attached_file_name(download))
+        except KeyError:
+            print("Login expiried/failed")
+            self._login()
+            self.download_beatmap(beatmap_number)
+        finally:
+            pass
+
+    def download_beatmap_list(self, beatmap_list):
+        for beatmap in beatmap_list:
+            download_beatmaps(beatmap)
+
+    def extract_beatmap(self, beatmap_file, beatmap_name):
+        zipmap = zipfile.ZipFile(beatmap_file)
+        beatmap_dir = os.path.join(self.songs_dir, beatmap_name)
+        try:
+            os.mkdir(beatmap_dir)
+        except FileExistsError:
+            print("beatmap already exists")
+            raise
+        zipmap.extractall(path=beatmap_dir)

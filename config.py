@@ -1,2 +1,1 @@
-DUMMY =
-{"username": "dummyosu", "password": = "rEqUEst12"}
+DUMMY = {"username": "dummyosu", "password":  "rEqUEsts12"}
