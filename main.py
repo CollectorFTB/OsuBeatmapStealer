@@ -33,7 +33,7 @@ def main():
     input("Press enter to close the program...")
 
 if __name__ == "__main__":
-    path = get_path()[1]
+    path = get_path()
     log_path = join(path, 'error_log.txt')
     basicConfig(filename=log_path, level=DEBUG)
     try:

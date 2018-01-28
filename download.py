@@ -7,7 +7,7 @@ from path_helper import get_path
 
 def download_beatmaps(interval):
     # get path and save it for later
-    new_path = get_path()[1]
+    new_path = get_path()
 
     # get the paths for both the files
     my_beatmaps_path = join(new_path, 'my_beatmaps.txt')

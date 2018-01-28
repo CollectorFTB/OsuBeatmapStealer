@@ -13,7 +13,7 @@ def steal(mode):
         file_name = 'my_beatmaps.txt'
 
     # get the path for the output and osu dir
-    outer_path, inner_path = get_path()
+    inner_path = get_path()
 
     # create path for the output file
     beatmaps_file_path = join(inner_path, file_name)
