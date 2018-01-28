@@ -2,7 +2,7 @@ from steal import steal
 from download import download_beatmaps
 from path_helper import get_path
 from os.path import join
-import logging
+from logging import exception, basicConfig, DEBUG
 
 
 # stupid text interaction for users
@@ -35,11 +35,11 @@ def main():
 if __name__ == "__main__":
     path = get_path()[1]
     log_path = join(path, 'error_log.txt')
-    logging.basicConfig(filename=log_path, level=logging.DEBUG)
+    basicConfig(filename=log_path, level=DEBUG)
     try:
         main()
     except Exception as e:
-        logging.exception(str(e))
+        exception(str(e))
         raise
 
 

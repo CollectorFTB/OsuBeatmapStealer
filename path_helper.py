@@ -1,9 +1,9 @@
-import os
+from os import getcwd
 
 
 def get_path():
     # get path and save it for later
-    path = os.getcwd()
+    path = getcwd()
 
     # outer dir
     outer_path = path[:path.find('OsuBeatmapStealer')-1]

@@ -1,4 +1,5 @@
-import os
+from os.path import join
+from os import remove
 import webbrowser
 import time
 from path_helper import get_path
@@ -9,8 +10,8 @@ def download_beatmaps(interval):
     new_path = get_path()[1]
 
     # get the paths for both the files
-    my_beatmaps_path = os.path.join(new_path, 'my_beatmaps.txt')
-    other_beatmaps_path = os.path.join(new_path, 'beatmaps.txt')
+    my_beatmaps_path = join(new_path, 'my_beatmaps.txt')
+    other_beatmaps_path = join(new_path, 'beatmaps.txt')
 
     # open up the file for writing
     with open(my_beatmaps_path, 'r') as my_beatmaps_file:
@@ -27,7 +28,7 @@ def download_beatmaps(interval):
     other_beatmap_numbers -= my_beatmap_numbers
 
     # delete the my_beatmap.txt file cuz you don't need it anymore
-    os.remove(my_beatmaps_path)
+    remove(my_beatmaps_path)
 
     # create download links for each of the numbers left on his list
     beatmap_link_list = ["https://osu.ppy.sh/d/" + str(beatmap_number) for beatmap_number in other_beatmap_numbers]
