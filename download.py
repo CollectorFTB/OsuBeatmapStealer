@@ -1,13 +1,15 @@
 import os
+import re
 import tempfile
 import zipfile
 from os import remove
 from os.path import join
 from time import sleep
 from webbrowser import open_new_tab
-import re
-from requests import Session
+
 import requests
+from requests import Session
+from tqdm import tqdm
 
 import config
 from path_helper import get_path
@@ -37,6 +39,7 @@ def download_beatmaps(interval):
 
     # delete the my_beatmap.txt file cuz you don't need it anymore
     remove(my_beatmaps_path)
+    print("starting download...")
     osu_session = Osu_Session(os.path.join(new_path,"..","osu!","Songs")) #TODO:switch to actual song library
     osu_session.download_beatmap_list(other_beatmap_numbers)
 
@@ -68,18 +71,30 @@ class Osu_Session():
     def attached_file_name(response):
         header = response.headers['Content-Disposition']
         #'attachment;filename="80 Ai Otsuka - Sakuranbo.osz";'
-        print(header)
         return re.search('filename="(.*).osz";',header).group(1)
         #'80 Ai Otsuka - Sakuranbo'
+
+    @staticmethod
+    def attached_file_length(response):
+        return int(response.headers['Content-Length'])
+
 
     def download_beatmap(self, beatmap_number):
         try:
             download = self.session.get(self._endpoint(
-                "beatmapsets", str(beatmap_number), "download"))
+                "beatmapsets", str(beatmap_number), "download"),stream=True)
             download.raise_for_status()
-            with tempfile.NamedTemporaryFile(suffix=".zip") as f:
-                f.write(download.content)
-                self.extract_beatmap(f, self.attached_file_name(download))
+            with tempfile.TemporaryFile() as f:
+                # TODO:Adjust chunck size
+                chunck_size = 128
+                file_size = self.attached_file_length(download) 
+                beatmap_name = self.attached_file_name(download)
+                with tqdm(total=file_size,desc=beatmap_name,unit='B',unit_scale=True) as pbar:
+                    for chunck in download.iter_content(chunk_size=chunck_size):
+                        f.write(chunck)
+                        pbar.update(chunck_size)
+
+                self.extract_beatmap(f, beatmap_name)
         except requests.exceptions.HTTPError:
             print("Beatmap {} does not exist".format(beatmap_number))
         except KeyError:
@@ -91,7 +106,6 @@ class Osu_Session():
 
     def download_beatmap_list(self, beatmap_list):
         for beatmap in beatmap_list:
-            print("downloading " + str(beatmap))
             self.download_beatmap(beatmap)
 
     def extract_beatmap(self, beatmap_file, beatmap_name):
