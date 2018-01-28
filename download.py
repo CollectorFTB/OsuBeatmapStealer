@@ -7,6 +7,7 @@ from os.path import join
 from time import sleep
 from webbrowser import open_new_tab
 
+import concurrent.futures
 import requests
 from requests import Session
 from tqdm import tqdm
@@ -89,11 +90,8 @@ class Osu_Session():
                 chunck_size = 128
                 file_size = self.attached_file_length(download) 
                 beatmap_name = self.attached_file_name(download)
-                with tqdm(total=file_size,desc=beatmap_name,unit='B',unit_scale=True) as pbar:
-                    for chunck in download.iter_content(chunk_size=chunck_size):
-                        f.write(chunck)
-                        pbar.update(chunck_size)
-
+                for chunck in download.iter_content(chunk_size=chunck_size):
+                    f.write(chunck)
                 self.extract_beatmap(f, beatmap_name)
         except requests.exceptions.HTTPError:
             print("Beatmap {} does not exist".format(beatmap_number))
@@ -102,11 +100,13 @@ class Osu_Session():
             self._login()
             self.download_beatmap(beatmap_number)
         finally:
-            pass
+            return beatmap_name
 
     def download_beatmap_list(self, beatmap_list):
-        for beatmap in beatmap_list:
-            self.download_beatmap(beatmap)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_to_url = {executor.submit(self.download_beatmap, beatmap): beatmap for beatmap in beatmap_list}
+            for thread in tqdm(concurrent.futures.as_completed(future_to_url),desc="Beatmaps",unit='BMP'):
+                print(thread.result())
 
     def extract_beatmap(self, beatmap_file, beatmap_name):
         zipmap = zipfile.ZipFile(beatmap_file)
