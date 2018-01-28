@@ -16,11 +16,11 @@ def download_beatmaps(interval):
     # open up the file for writing
     with open(my_beatmaps_path, 'r') as my_beatmaps_file:
         # get your numbers
-        my_beatmap_numbers = [int(line.split('/')[-1]) for line in my_beatmaps_file]
+        my_beatmap_numbers = [line for line in my_beatmaps_file]
 
     with open(other_beatmaps_path, 'r') as other_beatmaps_file:
         # get other numbers
-        other_beatmap_numbers = [int(line.split('/')[-1]) for line in other_beatmaps_file]
+        other_beatmap_numbers = [line for line in other_beatmaps_file]
 
     # remove your beatmaps from his list and eliminate duplicates
     my_beatmap_numbers = set(my_beatmap_numbers)
@@ -31,7 +31,7 @@ def download_beatmaps(interval):
     remove(my_beatmaps_path)
 
     # create download links for each of the numbers left on his list
-    beatmap_link_list = ["https://osu.ppy.sh/d/" + str(beatmap_number) for beatmap_number in other_beatmap_numbers]
+    beatmap_link_list = ["https://osu.ppy.sh/d/" + beatmap_number for beatmap_number in other_beatmap_numbers]
 
     # start downloading beatmaps
     for url in beatmap_link_list:

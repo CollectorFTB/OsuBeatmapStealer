@@ -39,7 +39,7 @@ def steal(mode):
     beatmap_number_list = sorted(beatmap_number_list)
 
     # create links for each of the numbers
-    beatmap_link_list = ["https://osu.ppy.sh/s/" + str(beatmap_number) for beatmap_number in beatmap_number_list]
+    beatmap_link_list = [str(beatmap_number) for beatmap_number in beatmap_number_list]
 
     # open up the file for writing
     with open(beatmaps_file_path, 'w') as beatmaps_file:
