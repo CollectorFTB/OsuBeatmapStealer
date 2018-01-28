@@ -62,14 +62,13 @@ class Osu_Session():
 
     def _endpoint(self, *args):
         ret= "/".join([self.osu] + list(args))
-        print(ret)
         return ret
 
     @staticmethod
     def attached_file_name(response):
-        name = response.headers['Content-Disposition']
+        header = response.headers['Content-Disposition']
         #'attachment;filename="80 Ai Otsuka - Sakuranbo.osz";'
-        return os.path.splitext(name[name.find("filename=")+len("filename=")+1:name.rfind(";")-1])[0]
+        return re.search("filename=(.*).osz;",header).group(0)
         #'80 Ai Otsuka - Sakuranbo'
 
     def download_beatmap(self, beatmap_number):
