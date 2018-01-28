@@ -117,8 +117,3 @@ class Osu_Session():
             print("beatmap already exists")
             raise
         zipmap.extractall(path=beatmap_dir)
-
-if __name__ == '__main__':
-    sesh = Osu_Session(os.getcwd())
-    sesh.download_beatmap(85)
-    sesh.download_beatmap(109570)
