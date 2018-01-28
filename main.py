@@ -1,5 +1,8 @@
 from steal import steal
 from download import download_beatmaps
+from path_helper import get_path
+from os.path import join
+import logging
 
 
 # stupid text interaction for users
@@ -30,4 +33,13 @@ def main():
     input("Press enter to close the program...")
 
 if __name__ == "__main__":
-    main()
+    path = get_path()[1]
+    log_path = join(path, 'error_log.txt')
+    logging.basicConfig(filename=log_path, level=logging.DEBUG)
+    try:
+        main()
+    except Exception as e:
+        logging.exception(str(e))
+        raise
+
+
