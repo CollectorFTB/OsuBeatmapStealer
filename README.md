@@ -31,4 +31,6 @@ You can find the downloaded beatmaps in your computer's downloads folder
 
 (You can close the program at any stage, open the beatmaps it downloaded so far and continue later, better just let it run over night or let it work a couple of minutues at a time because it will open a new browser tab every couple of seconds)
 
+## Errors:
+If you get any errors, it will create a file called error_log.txt send it over to me in discord or something (Collector#5029) 
 
