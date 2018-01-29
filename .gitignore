@@ -1,0 +1,6 @@
+/virtenv
+/.vscode
+/__pycache__
+/beatmaps.txt
+/error_log.txt
+/osu_steal
