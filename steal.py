@@ -15,8 +15,7 @@ def steal(songs_dir):
     # for each beatmap save the forum number
     beatmap_number_set = {beatmap[:beatmap.find(' ')] for beatmap in listdir(songs_dir)}
     # filter out un-submitted maps that don't have a link
-    filter(is_number, beatmap_number_set)
-    return beatmap_number_set
+    return set(filter(is_number, beatmap_number_set))
 
 
 def create_steal_file(file_path, songs_dir):

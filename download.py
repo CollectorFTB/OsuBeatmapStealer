@@ -9,7 +9,9 @@ from tqdm import tqdm
 
 
 def change_format(line):
-    return search("(\d+)", line).group(1)
+    match = search("(\d+)", line)
+    if match:
+        return match.group(1)
 
 
 def download_beatmaps(my_beatmap_numbers, other_beatmaps_path, songs_dir):
@@ -19,7 +21,7 @@ def download_beatmaps(my_beatmap_numbers, other_beatmaps_path, songs_dir):
         other_beatmap_numbers = {change_format(line) for line in other_beatmaps_file}
 
     # remove your beatmaps from his list and eliminate duplicates
-    other_beatmap_numbers -= my_beatmap_numbers
+    other_beatmap_numbers -= my_beatmap_numbers | {None}
 
     # starts session with osu
     if other_beatmap_numbers:
