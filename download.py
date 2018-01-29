@@ -16,33 +16,18 @@ import config
 from path_helper import get_path
 
 
-def download_beatmaps(interval):
+def download_beatmaps(my_beatmap_numbers,other_beatmaps_path,osu_dir):
     # get path and save it for later
-    new_path = get_path()
-
-    # get the paths for both the files
-    my_beatmaps_path = join(new_path, 'my_beatmaps.txt')
-    other_beatmaps_path = join(new_path, 'beatmaps.txt')
-
+    songs_dir = join(osu_dir,"Songs")
     # open up the file for writing
-    with open(my_beatmaps_path, 'r') as my_beatmaps_file:
-        # get your numbers
-        my_beatmap_numbers = [int(line.split('/')[-1]) for line in my_beatmaps_file]
-
     with open(other_beatmaps_path, 'r') as other_beatmaps_file:
         # get other numbers
-        other_beatmap_numbers = [int(line.split('/')[-1]) for line in other_beatmaps_file]
-
+        other_beatmap_numbers = {line.strip() for line in other_beatmaps_file}
     # remove your beatmaps from his list and eliminate duplicates
-    my_beatmap_numbers = set(my_beatmap_numbers)
-    other_beatmap_numbers = set(other_beatmap_numbers)
     other_beatmap_numbers -= my_beatmap_numbers
-
-    # delete the my_beatmap.txt file cuz you don't need it anymore
-    remove(my_beatmaps_path)
-    print("starting download...")
-    osu_session = Osu_Session(os.path.join(new_path,"..","osu!","Songs")) #TODO:switch to actual song library
-    osu_session.download_beatmap_list(other_beatmap_numbers)
+    if other_beatmap_numbers:
+        osu_session = Osu_Session(songs_dir) #TODO:switch to actual song library
+        osu_session.download_beatmap_list(other_beatmap_numbers)
 
 class Osu_Session():
     def __init__(self, songs_dir):
@@ -83,7 +68,7 @@ class Osu_Session():
     def download_beatmap(self, beatmap_number):
         try:
             download = self.session.get(self._endpoint(
-                "beatmapsets", str(beatmap_number), "download"),stream=True)
+                "beatmapsets", beatmap_number, "download"),stream=True)
             download.raise_for_status()
             with tempfile.TemporaryFile() as f:
                 # TODO:Adjust chunck size
@@ -105,8 +90,10 @@ class Osu_Session():
     def download_beatmap_list(self, beatmap_list):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_to_url = {executor.submit(self.download_beatmap, beatmap): beatmap for beatmap in beatmap_list}
-            for thread in tqdm(concurrent.futures.as_completed(future_to_url),desc="Beatmaps",unit='BMP'):
+            for thread in tqdm(concurrent.futures.as_completed(future_to_url),desc="Downloaded",unit='Beatmaps'):
                 print(thread.result())
+                if thread.exception():
+                    raise thread.exception()
 
     def extract_beatmap(self, beatmap_file, beatmap_name):
         zipmap = zipfile.ZipFile(beatmap_file)
