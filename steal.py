@@ -1,49 +1,27 @@
 from os.path import join
 from os import listdir
 from path_helper import get_path
+import numbers
 
+def is_number(number):
+    try:
+        a =  int(number)
+        return True
+    except ValueError:
+        return False
 
-def steal(mode):
-    file_name = ""
-    # stealing from yourself
-    if mode == 0:
-        file_name = 'beatmaps.txt'
-    # stealing for yourself
-    elif mode == 1:
-        file_name = 'my_beatmaps.txt'
-
-    # get the path for the output and osu dir
-    inner_path = get_path()
-
-    # create path for the output file
-    beatmaps_file_path = join(inner_path, file_name)
-
-    # go into songs dir inside osu dir
-    outer_path = join(inner_path, '..', 'osu!', 'Songs')
-
+def steal(osu_dir):
+    songs_dir = join(osu_dir,"Songs")
     # for each beatmap save the forum number
-    beatmaps = listdir(outer_path)
-    beatmap_number_list = [beatmap[:beatmap.find(' ')] for beatmap in beatmaps]
-
+    beatmap_number_set = {beatmap[:beatmap.find(' ')] for beatmap in listdir(songs_dir)}
     # filter out un-submitted maps that don't have a link
-    for beatmap_number in beatmap_number_list[:]:
-        try:
-            int(beatmap_number)
-        except ValueError:
-            beatmap_number_list.remove(beatmap_number)
+    filter(is_number, beatmap_number_set)
+    return beatmap_number_set
 
-    # make into int instead of string
-    beatmap_number_list = [int(element) for element in beatmap_number_list]
-
-    # sort the result for faster checking later
-    beatmap_number_list = sorted(beatmap_number_list)
-
-    # create links for each of the numbers
-    beatmap_link_list = ["https://osu.ppy.sh/s/" + str(beatmap_number) for beatmap_number in beatmap_number_list]
-
+def create_steal_file(file_path,osu_dir):
+    beatmap_number_set = steal(osu_dir)
     # open up the file for writing
-    with open(beatmaps_file_path, 'w') as beatmaps_file:
-
+    with open(file_path, 'w') as beatmaps_file:
         # write the links into the file
-        for beatmap_link in beatmap_link_list:
-            beatmaps_file.write(beatmap_link + '\n')
+        for beatmap_number in beatmap_number_set:
+            beatmaps_file.write(beatmap_number + '\n')
