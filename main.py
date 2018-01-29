@@ -11,12 +11,12 @@ from tkinter import Tk
 def main():
     print("~~ https://github.com/CollectorFTB/OsuBeatmapStealer ~~")
     root = Tk()
-    root.withdraw() #Hide ghost window
+    root.withdraw()  # Hide ghost window
     initial_dir = get_path()
     showinfo(parent=root, message="Please Select your osu folder")
     osu_dir = askdirectory(title="Osu! Folder", initialdir=initial_dir)
 
-    if askyesno(parent=root,title="Mode", message="Create your own beatmap list?"):
+    if askyesno(parent=root, title="Mode", message="Create your own beatmap list?"):
         showinfo(parent=root, title="File select",
                  message="Select where to save the beatmap file")
         beatmap_file_path = asksaveasfilename(parent=root, filetypes=[("Txt File", "*.txt")],
@@ -27,7 +27,7 @@ def main():
     else:
         showinfo(parent=root, title="beatmap file",
                  message="Please select the file you want to steal from")
-        other_beatmap = askopenfilename(parent=root, title="Beatmap file to steal from",initialdir=initial_dir)
+        other_beatmap = askopenfilename(parent=root, title="Beatmap file to steal from", initialdir=initial_dir)
         my_beatmaps = steal(osu_dir)
         download_beatmaps(my_beatmaps, other_beatmap, osu_dir)
         showinfo(parent=root, title="Done!",
