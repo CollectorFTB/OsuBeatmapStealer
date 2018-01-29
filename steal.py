@@ -10,8 +10,8 @@ def is_number(number):
         return False
 
 
-def steal(osu_dir):
-    songs_dir = join(osu_dir, "Songs")
+def steal(songs_dir):
+    songs_dir = join(songs_dir)
     # for each beatmap save the forum number
     beatmap_number_set = {beatmap[:beatmap.find(' ')] for beatmap in listdir(songs_dir)}
     # filter out un-submitted maps that don't have a link
@@ -19,8 +19,8 @@ def steal(osu_dir):
     return beatmap_number_set
 
 
-def create_steal_file(file_path, osu_dir):
-    beatmap_number_set = steal(osu_dir)
+def create_steal_file(file_path, songs_dir):
+    beatmap_number_set = steal(songs_dir)
     # open up the file for writing
     with open(file_path, 'w') as beatmaps_file:
         # write the links into the file

@@ -13,8 +13,8 @@ def main():
     root = Tk()
     root.withdraw()  # Hide ghost window
     initial_dir = get_path()
-    showinfo(parent=root, message="Please Select your osu folder")
-    osu_dir = askdirectory(title="Osu! Folder", initialdir=initial_dir)
+    showinfo(parent=root, message="Please Select your osu songs folder")
+    osu_dir = askdirectory(title="Osu! Songs Folder", initialdir=initial_dir)
 
     if askyesno(parent=root, title="Mode", message="Create your own beatmap list?"):
         showinfo(parent=root, title="File select",
@@ -24,7 +24,7 @@ def main():
         create_steal_file(beatmap_file_path, osu_dir)
         showinfo(parent=root, title="Done!",
                  message="Finished creating beatmaps.txt, the file should be waiting for you after you close this window\nGive this to other people for them to download your beatmaps!")
-    else:
+    elif askyesno(parent=root, title="Mode", message="Steal beatmaps from someone else?"):
         showinfo(parent=root, title="beatmap file",
                  message="Please select the file you want to steal from")
         other_beatmap = askopenfilename(parent=root, title="Beatmap file to steal from", initialdir=initial_dir)
@@ -32,6 +32,9 @@ def main():
         download_beatmaps(my_beatmaps, other_beatmap, osu_dir)
         showinfo(parent=root, title="Done!",
                  message="Finished downloading the beatmaps you didn't already have!")
+    else:
+        showinfo(parent=root, title="Done!",
+                 message="Didn't do anything. Bye Bye.")
 
 
 if __name__ == "__main__":

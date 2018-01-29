@@ -1,15 +1,15 @@
-import os
-import re
-import tempfile
-import zipfile
-import concurrent.futures
-import requests
-from requests import Session
+from os.path import join
+from os import mkdir
+from re import search
+from tempfile import TemporaryFile
+from zipfile import ZipFile
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from requests import Session, exceptions
 from tqdm import tqdm
 
 
 def change_format(line):
-    return re.search("(\d+)", line).group(1)
+    return search("(\d+)", line).group(1)
 
 
 def download_beatmaps(my_beatmap_numbers, other_beatmaps_path, songs_dir):
@@ -55,7 +55,7 @@ class OsuSession:
     def attached_file_name(response):
         header = response.headers['Content-Disposition']
         # 'attachment;filename="80 Ai Otsuka - Sakuranbo.osz";'
-        return re.search('filename="(.*).osz";', header).group(1)
+        return search('filename="(.*).osz";', header).group(1)
         # '80 Ai Otsuka - Sakuranbo'
 
     @staticmethod
@@ -67,7 +67,7 @@ class OsuSession:
             download = self.session.get(self._endpoint(
                 "beatmapsets", beatmap_number, "download"), stream=True)
             download.raise_for_status()
-            with tempfile.TemporaryFile() as f:
+            with TemporaryFile() as f:
                 # TODO: Adjust chunk size
                 chunk_size = 128
                 beatmap_name = self.attached_file_name(download)
@@ -75,7 +75,7 @@ class OsuSession:
                     f.write(chunk)
                 self.extract_beatmap(f, beatmap_name)
             return beatmap_name
-        except requests.exceptions.HTTPError:
+        except exceptions.HTTPError:
             tqdm.write("Beatmap {} does not exist".format(beatmap_number))
         except KeyError:
             tqdm.write("Login expired/failed")
@@ -85,17 +85,17 @@ class OsuSession:
             return ''
 
     def download_beatmap_list(self, beatmap_list):
-        with concurrent.futures.ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor() as executor:
             threads = {executor.submit(self.download_beatmap, beatmap): beatmap for beatmap in beatmap_list}
-            for thread in tqdm(concurrent.futures.as_completed(threads), ncols=100,  desc="Downloaded", unit=' Beatmaps', total=len(beatmap_list)):
+            for thread in tqdm(as_completed(threads), ncols=100,  desc="Downloaded", unit=' Beatmaps', total=len(beatmap_list)):
                 if thread.exception():
                     raise thread.exception()
 
     def extract_beatmap(self, beatmap_file, beatmap_name):
-        zip_map = zipfile.ZipFile(beatmap_file)
-        beatmap_dir = os.path.join(self.songs_dir, beatmap_name)
+        zip_map = ZipFile(beatmap_file)
+        beatmap_dir = join(self.songs_dir, beatmap_name)
         try:
-            os.mkdir(beatmap_dir)
+            mkdir(beatmap_dir)
         except FileExistsError:
             print("beatmap already exists")
             raise
