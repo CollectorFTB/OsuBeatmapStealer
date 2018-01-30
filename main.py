@@ -6,7 +6,7 @@ from logging import exception, basicConfig, DEBUG
 from tkinter.filedialog import askdirectory, asksaveasfilename, askopenfilename
 from tkinter.messagebox import askyesno, showinfo
 from tkinter import Tk
-from requests import exceptions
+from requests.exceptions import ConnectionError
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
         my_beatmaps = steal(osu_dir)
         try:
             download_beatmaps(my_beatmaps, other_beatmap, osu_dir)
-        except exceptions.ConnectionError:
+        except ConnectionError:
             showinfo(parent=root, title="No internet",message="It seems like you aren't connected to the Internet.\nPlease connect and try again")
         else:
             showinfo(parent=root, title="Done!",
