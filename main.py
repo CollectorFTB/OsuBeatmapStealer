@@ -4,7 +4,7 @@ from path_helper import get_path
 from os.path import join
 from logging import exception, basicConfig, DEBUG
 from tkinter.filedialog import askdirectory, asksaveasfilename, askopenfilename
-from tkinter.messagebox import askyesno, showinfo
+from tkinter.messagebox import askyesno, showinfo,showerror
 from tkinter import Tk
 from requests.exceptions import ConnectionError
 
@@ -49,5 +49,8 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
+        root = Tk()
+        root.withdraw()
+        showerror("ERROR","Unexpected Error\nPlease send the created errorlog.txt file through discord to Collector(#5029) or send it to gilad.david95@gmail.com",parent=root)
         exception(str(e))
         raise
