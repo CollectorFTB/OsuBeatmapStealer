@@ -9,6 +9,20 @@ from tkinter import Tk
 from requests.exceptions import ConnectionError
 
 
+def force_txt_ext(file_path):
+    return 
+
+def cancel_program():
+    """Cancel program run and exit"""
+    #Might be a better implementation than using exit. works for now
+    showinfo(message="Cancelling,Goodbye!")
+    exit(0)
+
+def check_path(path):
+    """Cancels program run if path was not entered"""
+    if path == '':
+        cancel_program()
+
 def main():
     print("~~ https://github.com/CollectorFTB/OsuBeatmapStealer ~~")
     root = Tk()
@@ -16,19 +30,21 @@ def main():
     initial_dir = get_path()
     showinfo(parent=root, message="Please Select your osu songs folder")
     osu_dir = askdirectory(title="Osu! Songs Folder", initialdir=initial_dir)
-
+    check_path(osu_dir)
     if askyesno(parent=root, title="Mode", message="Create your own beatmap list?"):
         showinfo(parent=root, title="File select",
                  message="Select where to save the beatmap file")
         beatmap_file_path = asksaveasfilename(parent=root, filetypes=[("Txt File", "*.txt")],
                                               initialdir=initial_dir, title="Your beatmap file", initialfile="beatmaps.txt")
+        check_path(beatmap_file_path)
         create_steal_file(beatmap_file_path, osu_dir)
         showinfo(parent=root, title="Done!",
                  message="Finished creating beatmaps.txt, the file should be waiting for you after you close this window\nGive this to other people for them to download your beatmaps!")
     elif askyesno(parent=root, title="Mode", message="Steal beatmaps from someone else?"):
         showinfo(parent=root, title="beatmap file",
                  message="Please select the file you want to steal from")
-        other_beatmap = askopenfilename(parent=root, title="Beatmap file to steal from", initialdir=initial_dir)
+        other_beatmap = askopenfilename(parent=root, title="Beatmap file to steal from", initialdir=initial_dir,filetypes=[("Txt File", "*.txt")])
+        check_path(other_beatmap)
         my_beatmaps = steal(osu_dir)
         try:
             download_beatmaps(my_beatmaps, other_beatmap, osu_dir)
