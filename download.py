@@ -4,7 +4,7 @@ from re import search
 from tempfile import TemporaryFile
 from zipfile import ZipFile
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from requests import Session, exceptions
+from requests import Session, HTTPError
 from tqdm import tqdm
 
 
@@ -77,7 +77,7 @@ class OsuSession:
                     f.write(chunk)
                 self.extract_beatmap(f, beatmap_name)
             return beatmap_name
-        except exceptions.HTTPError:
+        except HTTPError:
             tqdm.write("Beatmap {} does not exist".format(beatmap_number))
         except KeyError:
             tqdm.write("Login expired/failed")
