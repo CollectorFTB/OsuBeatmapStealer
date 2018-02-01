@@ -7,20 +7,15 @@ from tkinter.filedialog import askdirectory, asksaveasfilename, askopenfilename
 from tkinter.messagebox import askyesno, showinfo,showerror
 from tkinter import Tk,Button,Label,Entry,W,E,S,N,END
 from requests.exceptions import ConnectionError
+from functools import wraps
 
 
 def force_txt_ext(file_path):
     return 
 
-def cancel_program():
-    """Cancel program run and exit"""
-    #Might be a better implementation than using exit. works for now
-    showinfo(message="Cancelling,Goodbye!")
-    exit(0)
-
 def check_path(path):
     """Cancels program run if path was not entered"""
-    return path == ''
+    return not path == ''
 
 class App:
     def __init__(self):
@@ -40,6 +35,20 @@ class App:
                command=self.create_steal_file).grid(row=rows["button_row"], column=0)
         Button(master=self.root, text="Steal Beatmaps", command=self.steal_beatmaps).grid(row=rows["button_row"], column=1)
 
+        self.download_video = BooleanVar(master=self.root, value=False)
+        Checkbutton(master=self.root, text="noVid",
+                    variable=self.download_video, onvalue=False, offvalue=True).grid(row=rows["check_row"], sticky=W)
+
+    def needs_osu_dir(fun):
+        @wraps(fun)
+        def osu_dir_checked_function(self, *args, **kwargs):
+            if check_path(self.osu_dir):
+                return fun(self,*args, **kwargs)
+            else:
+                showinfo(parent=self.root,
+                         message="Please enter your osu song folder first!")
+        return osu_dir_checked_function
+
     @property
     def osu_dir(self):
         return self.dir_entry.get()
@@ -55,7 +64,7 @@ class App:
     def select_dir(self):
         self.osu_dir = askdirectory(title="Osu! Songs Folder", initialdir=self.initial_dir)
 
-
+    @needs_osu_dir
     def create_steal_file(self):
         showinfo(parent=self.root, title="File select",
                  message="Select where to save the beatmap file")
@@ -66,8 +75,9 @@ class App:
             showinfo(parent=self.root, title="Done!",
                      message="Finished creating sharable beatmap file, the file should be waiting for you after you close this window\nGive this to other people for them to download your beatmaps!")
 
+    @needs_osu_dir
     def steal_beatmaps(self):
-        showinfo(parent=root, title="beatmap file",
+        showinfo(parent=self.root, title="beatmap file",
                  message="Please select the file you want to steal from")
         other_beatmap = askopenfilename(parent=self.root, title="Beatmap file to steal from",
                                         initialdir=self.initial_dir, filetypes=[("Txt File", "*.txt")])
@@ -76,11 +86,12 @@ class App:
             try:
                 download_beatmaps(my_beatmaps, other_beatmap, self.osu_dir)
             except ConnectionError:
-                showinfo(parent=root, title="No internet",
+                showinfo(parent=self.root, title="No internet",
                          message="It seems like you aren't connected to the Internet.\nPlease connect and try again")
             else:
-                showinfo(parent=root, title="Done!",
+                showinfo(parent=self.root, title="Done!",
                          message="Finished downloading the beatmaps you didn't already have!")
+
 
 def main():
     app = App()
@@ -98,3 +109,4 @@ if __name__ == "__main__":
         showerror("ERROR","Unexpected Error\nPlease send the created errorlog.txt file through discord to Collector(#5029) or send it to gilad.david95@gmail.com",parent=root)
         exception(str(e))
         raise
+
