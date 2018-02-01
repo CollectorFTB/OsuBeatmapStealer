@@ -14,7 +14,7 @@ def change_format(line):
         return match.group(1)
 
 
-def download_beatmaps(my_beatmap_numbers, other_beatmaps_path, songs_dir):
+def download_beatmaps(my_beatmap_numbers, other_beatmaps_path, songs_dir, download_video):
     # open up the file for writing
     with open(other_beatmaps_path, 'r') as other_beatmaps_file:
         # get other numbers
@@ -27,7 +27,7 @@ def download_beatmaps(my_beatmap_numbers, other_beatmaps_path, songs_dir):
     if other_beatmap_numbers:
         tqdm.write("Starting download...")
         osu_session = OsuSession(songs_dir)
-        osu_session.download_beatmap_list(other_beatmap_numbers)
+        osu_session.download_beatmap_list(other_beatmap_numbers,download_video)
 
 
 class OsuSession:
@@ -65,10 +65,10 @@ class OsuSession:
     def attached_file_length(response):
         return int(response.headers['Content-Length'])
 
-    def download_beatmap(self, beatmap_number):
+    def download_beatmap(self, beatmap_number,download_video):
         try:
-            download = self.session.get(self._endpoint(
-                "beatmapsets", beatmap_number, "download"), stream=True)
+            download = self.session.get(self._endpoint("beatmapsets", beatmap_number, "download") ,
+                                        params={"noVideo": int(not download_video)}, stream=True)
             download.raise_for_status()
             with TemporaryFile() as f:
                 # TODO: Adjust chunk size
@@ -87,9 +87,9 @@ class OsuSession:
         finally:
             return ''
 
-    def download_beatmap_list(self, beatmap_list):
+    def download_beatmap_list(self, beatmap_list,download_video):
         with ThreadPoolExecutor() as executor:
-            threads = {executor.submit(self.download_beatmap, beatmap): beatmap for beatmap in beatmap_list}
+            threads = {executor.submit(self.download_beatmap, beatmap, download_video): beatmap for beatmap in beatmap_list}
             for thread in tqdm(as_completed(threads), ncols=100,  desc="Downloaded", unit=' Beatmap', total=len(beatmap_list)):
                 if thread.exception():
                     raise thread.exception()

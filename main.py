@@ -5,7 +5,7 @@ from os.path import join
 from logging import exception, basicConfig, DEBUG
 from tkinter.filedialog import askdirectory, asksaveasfilename, askopenfilename
 from tkinter.messagebox import askyesno, showinfo,showerror
-from tkinter import Tk,Button,Label,Entry,W,E,S,N,END
+from tkinter import Tk,Button,Label,Entry,W,E,S,N,END,Checkbutton,BooleanVar
 from requests.exceptions import ConnectionError
 from functools import wraps
 
@@ -21,8 +21,7 @@ class App:
     def __init__(self):
         self.initial_dir = get_path()
         self.root = Tk("Osu! Beatmap Stealer")
-        row_names = ["title_row", "dir_row", "empty_row",
-                     "button_row"]  # for maintainability
+        row_names = ["title_row", "dir_row","button_row","check_row"]  # for maintainability
         rows = {row: index for index, row in enumerate(row_names)}
 
         Label(master=self.root, text="OsuBeatmapStealer", font=("Verdana", 18)).grid(row=rows["title_row"], column=0, columnspan=3, sticky=W + E)
@@ -35,9 +34,13 @@ class App:
                command=self.create_steal_file).grid(row=rows["button_row"], column=0)
         Button(master=self.root, text="Steal Beatmaps", command=self.steal_beatmaps).grid(row=rows["button_row"], column=1)
 
-        self.download_video = BooleanVar(master=self.root, value=False)
+        self._download_video = BooleanVar(master=self.root, value=False)
         Checkbutton(master=self.root, text="noVid",
-                    variable=self.download_video, onvalue=False, offvalue=True).grid(row=rows["check_row"], sticky=W)
+                    variable=self._download_video, onvalue=False, offvalue=True).grid(row=rows["check_row"], sticky=W)
+    
+    @property
+    def download_video(self):
+        return self._download_video.get()
 
     def needs_osu_dir(fun):
         @wraps(fun)
@@ -84,7 +87,7 @@ class App:
         if check_path(other_beatmap):
             my_beatmaps = steal(self.osu_dir)
             try:
-                download_beatmaps(my_beatmaps, other_beatmap, self.osu_dir)
+                download_beatmaps(my_beatmaps, other_beatmap, self.osu_dir, self.download_video)
             except ConnectionError:
                 showinfo(parent=self.root, title="No internet",
                          message="It seems like you aren't connected to the Internet.\nPlease connect and try again")
