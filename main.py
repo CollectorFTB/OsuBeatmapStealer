@@ -9,19 +9,18 @@ from tkinter import Tk
 from requests.exceptions import ConnectionError
 
 
-def force_txt_ext(file_path):
-    return 
-
 def cancel_program():
     """Cancel program run and exit"""
-    #Might be a better implementation than using exit. works for now
+    # Might be a better implementation than using exit. works for now
     showinfo(message="Cancelling,Goodbye!")
     exit(0)
+
 
 def check_path(path):
     """Cancels program run if path was not entered"""
     if path == '':
         cancel_program()
+
 
 def main():
     print("~~ https://github.com/CollectorFTB/OsuBeatmapStealer ~~")
@@ -51,11 +50,9 @@ def main():
         except ConnectionError:
             showinfo(parent=root, title="No internet",message="It seems like you aren't connected to the Internet.\nPlease connect and try again")
         else:
-            showinfo(parent=root, title="Done!",
-                    message="Finished downloading the beatmaps you didn't already have!")
+            showinfo(parent=root, title="Done!", message="Finished downloading the beatmaps you didn't already have!")
     else:
-        showinfo(parent=root, title="Done!",
-                 message="Didn't do anything. Bye Bye.")
+        showinfo(parent=root, title="Done!", message="Didn't do anything. Bye Bye.")
 
 
 if __name__ == "__main__":
