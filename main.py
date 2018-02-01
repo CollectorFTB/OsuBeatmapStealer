@@ -1,7 +1,7 @@
 from steal import steal, create_steal_file
 from download import download_beatmaps
 from path_helper import get_path
-from os.path import join
+from os.path import join,splitext
 from logging import exception, basicConfig, DEBUG
 from tkinter.filedialog import askdirectory, asksaveasfilename, askopenfilename
 from tkinter.messagebox import askyesno, showinfo,showerror
@@ -11,7 +11,8 @@ from functools import wraps
 
 
 def force_txt_ext(file_path):
-    return 
+    path,extention = splitext(file_path)
+    return path + ".txt"
 
 def check_path(path):
     """Cancels program run if path was not entered"""
@@ -73,6 +74,7 @@ class App:
                  message="Select where to save the beatmap file")
         beatmap_file_path = asksaveasfilename(parent=self.root, filetypes=[("Txt File", "*.txt")],
                                               initialdir=self.initial_dir, title="Your beatmap file", initialfile="beatmaps.txt")
+        beatmap_file_path = force_txt_ext(beatmap_file_path)
         if check_path(beatmap_file_path):
             create_steal_file(beatmap_file_path, self.osu_dir)
             showinfo(parent=self.root, title="Done!",
