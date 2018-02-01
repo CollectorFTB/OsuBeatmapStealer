@@ -25,6 +25,7 @@ def download_beatmaps(my_beatmap_numbers, other_beatmaps_path, songs_dir):
 
     # starts session with osu
     if other_beatmap_numbers:
+        tqdm.write("Starting download...")
         osu_session = OsuSession(songs_dir)
         osu_session.download_beatmap_list(other_beatmap_numbers)
 
@@ -89,7 +90,7 @@ class OsuSession:
     def download_beatmap_list(self, beatmap_list):
         with ThreadPoolExecutor() as executor:
             threads = {executor.submit(self.download_beatmap, beatmap): beatmap for beatmap in beatmap_list}
-            for thread in tqdm(as_completed(threads), ncols=100,  desc="Downloaded", unit=' Beatmaps', total=len(beatmap_list)):
+            for thread in tqdm(as_completed(threads), ncols=100,  desc="Downloaded", unit=' Beatmap', total=len(beatmap_list)):
                 if thread.exception():
                     raise thread.exception()
 
