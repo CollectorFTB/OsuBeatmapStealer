@@ -14,6 +14,7 @@ def force_txt_ext(file_path):
     path,extention = splitext(file_path)
     return path + ".txt"
 
+
 def check_path(path):
     """Cancels program run if path was not entered"""
     return not path == ''
@@ -99,6 +100,7 @@ class App:
 
 
 def main():
+    print("~~ https://github.com/CollectorFTB/OsuBeatmapStealer ~~")
     app = App()
     app.run()
 
