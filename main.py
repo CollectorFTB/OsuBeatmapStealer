@@ -7,7 +7,9 @@ from tkinter.filedialog import askdirectory, asksaveasfilename, askopenfilename
 from tkinter.messagebox import askyesno, showinfo, showerror
 from tkinter import Tk, Button, Label, Entry, W, E, S, N, END, Checkbutton, BooleanVar
 from requests.exceptions import ConnectionError
-from functools import wraps
+from functools import wraps, partial
+from delete import delete
+from threading import Thread
 
 
 def force_txt_ext(file_path):
@@ -23,10 +25,10 @@ def check_path(file_path):
 class StealerApp:
     def __init__(self):
         self.initial_dir = get_path()
-        self.root = Tk(className="Osu! Utility Program")
-        row_names = ["title_row", "dir_row", "check_row", "delete_low_row", "delete_high_row", "button_row"]  # for maintainability
+        self.root = Tk(className="osu! Utility Program")
+        row_names = ["title_row", "dir_row", "check_row", "mode_row", "button_row"]  # for maintainability
         rows = {row: index for index, row in enumerate(row_names)}
-        Label(master=self.root, text="Osu! Map Tool", font=("Verdana", 18)).grid(row=rows["title_row"], column=0, columnspan=3, sticky=W + E)
+        Label(master=self.root, text="osu! Map Tool", font=("Verdana", 18)).grid(row=rows["title_row"], column=0, columnspan=3, sticky=W + E)
 
         Label(master=self.root, text="Osu! songs folder:").grid(row=rows["dir_row"], sticky=W)
         self._dir_entry = Entry(master=self.root)
@@ -40,19 +42,22 @@ class StealerApp:
 
         Label(master=self.root, text="Download flags:").grid(row=rows["check_row"], column=0, sticky=W)
         self._download_video = BooleanVar(master=self.root, value=False)
-        Checkbutton(master=self.root, text="noVid",
+        Checkbutton(master=self.root, text="Delete video",
                     variable=self._download_video, onvalue=False, offvalue=True).grid(row=rows["check_row"], column=1, sticky=W)
-        self.apply_all_beatmaps = BooleanVar(master=self.root, value=True)
-        Checkbutton(master=self.root, text="Apply For ALL beatmaps (including already existing ones)",
-                    variable=self.apply_all_beatmaps, onvalue=False, offvalue=True).grid(row=rows["check_row"], column=2, sticky=W)
 
-        Label(master=self.root, text="Delete Songs Below (can leave as blank):").grid(row=rows["delete_low_row"], column=0, sticky=W)
-        self.low_star_entry = Entry(master=self.root)
-        self.low_star_entry.grid(row=rows["delete_low_row"], column=1)
-
-        Label(master=self.root, text="Delete Songs Above (can leave as blank):").grid(row=rows["delete_high_row"], column=0, sticky=W)
-        self.high_star_entry = Entry(master=self.root)
-        self.high_star_entry.grid(row=rows["delete_high_row"], column=1)
+        Label(master=self.root, text="Game Modes To Download:").grid(row=rows["mode_row"], column=0, sticky=W)
+        self.std = BooleanVar(master=self.root, value=True)
+        Checkbutton(master=self.root, text="osu! standard",
+                    variable=self.std, onvalue=True, offvalue=False).grid(row=rows["mode_row"], column=1, sticky=W)
+        self.mania = BooleanVar(master=self.root, value=False)
+        Checkbutton(master=self.root, text="Mania",
+                    variable=self.mania, onvalue=True, offvalue=False).grid(row=rows["mode_row"], column=2, sticky=W)
+        self.ctb = BooleanVar(master=self.root, value=False)
+        Checkbutton(master=self.root, text="Catch The Beat",
+                    variable=self.ctb, onvalue=True, offvalue=False).grid(row=rows["mode_row"], column=3, sticky=W)
+        self.taiko = BooleanVar(master=self.root, value=False)
+        Checkbutton(master=self.root, text="Taiko",
+                    variable=self.taiko, onvalue=True, offvalue=False).grid(row=rows["mode_row"], column=4, sticky=W)
 
     @property
     def download_video(self):
@@ -83,6 +88,14 @@ class StealerApp:
     def select_dir(self):
         self.songs_dir = askdirectory(title="Osu! Songs Folder", initialdir=self.initial_dir)
 
+    def button_callback(fun):
+        @wraps(fun)
+        def on_click(self):
+            t = Thread(target=partial(fun, self))
+            t.start()
+
+        return on_click
+
     @needs_songs_dir
     def create_steal_file(self):
         showinfo(parent=self.root, title="File select",
@@ -94,7 +107,8 @@ class StealerApp:
             create_steal_file(beatmap_file_path, self.songs_dir)
             showinfo(parent=self.root, title="Done!",
                      message="Finished creating sharable beatmap file, the file should be waiting for you after you close this window\nGive this to other people for them to download your beatmaps!")
-            self.root.quit()
+            showinfo(parent=self.root, title="Done!", message="RECOMMENDED: refresh your osu! by clicking F5 while in song selection")
+            self.root.destroy()
 
     @needs_songs_dir
     def steal_beatmaps(self):
@@ -106,6 +120,7 @@ class StealerApp:
             my_beatmaps = steal(self.songs_dir)
             try:
                 download_beatmaps(my_beatmaps, other_beatmap, self.songs_dir, self.download_video)
+                self.delete_maps()
             except ConnectionError:
                 showinfo(parent=self.root, title="No internet",
                          message="It seems like you aren't connected to the Internet.\nPlease connect and try again")
@@ -113,14 +128,15 @@ class StealerApp:
             else:
                 showinfo(parent=self.root, title="Done!",
                          message="Finished downloading the beatmaps you didn't already have!")
+                showinfo(parent=self.root, title="Done!", message="RECOMMENDED: refresh your osu! by clicking F5 while in song selection")
                 self.root.destroy()
 
     @needs_songs_dir
     def delete_maps(self):
-        low = self.low_star_entry.get()
-        high = self.high_star_entry.get()
-        if askyesno(parent=self.root, title="Confirmation", message="Are you sure you want to delete all maps below " + str(low) + " and above " + str(high) + "?"):
-            pass
+        delete(self.songs_dir, {"std": self.std.get(), "mania": self.mania.get(), "ctb": self.ctb.get(), "taiko": self.taiko.get()}, self.download_video)
+        showinfo(parent=self.root, title="Done!",
+                 message="Finished removing all videos and other game modes!")
+        self.root.quit()
 
 
 def main():

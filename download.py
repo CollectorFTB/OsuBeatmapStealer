@@ -73,6 +73,7 @@ class OsuSession:
             with TemporaryFile() as f:
                 # TODO: Adjust chunk size
                 chunk_size = 128
+
                 beatmap_name = self.attached_file_name(download)
                 for chunk in download.iter_content(chunk_size=chunk_size):
                     f.write(chunk)
