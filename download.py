@@ -27,7 +27,7 @@ def download_beatmaps(my_beatmap_numbers, other_beatmaps_path, songs_dir, downlo
     if other_beatmap_numbers:
         tqdm.write("Starting download...")
         osu_session = OsuSession(songs_dir)
-        osu_session.download_beatmap_list(other_beatmap_numbers,download_video)
+        osu_session.download_beatmap_list(other_beatmap_numbers, download_video)
 
 
 class OsuSession:
@@ -65,9 +65,9 @@ class OsuSession:
     def attached_file_length(response):
         return int(response.headers['Content-Length'])
 
-    def download_beatmap(self, beatmap_number,download_video):
+    def download_beatmap(self, beatmap_number, download_video):
         try:
-            download = self.session.get(self._endpoint("beatmapsets", beatmap_number, "download") ,
+            download = self.session.get(self._endpoint("beatmapsets", beatmap_number, "download"),
                                         params={"noVideo": int(not download_video)}, stream=True)
             download.raise_for_status()
             with TemporaryFile() as f:
@@ -83,11 +83,11 @@ class OsuSession:
         except KeyError:
             tqdm.write("Login expired/failed")
             self._login()
-            self.download_beatmap(beatmap_number)
+            self.download_beatmap(beatmap_number, download_video)
         finally:
             return ''
 
-    def download_beatmap_list(self, beatmap_list,download_video):
+    def download_beatmap_list(self, beatmap_list,  download_video):
         with ThreadPoolExecutor() as executor:
             threads = {executor.submit(self.download_beatmap, beatmap, download_video): beatmap for beatmap in beatmap_list}
             for thread in tqdm(as_completed(threads), ncols=100,  desc="Downloaded", unit=' Beatmap', total=len(beatmap_list)):
