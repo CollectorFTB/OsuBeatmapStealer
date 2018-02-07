@@ -108,7 +108,6 @@ class StealerApp:
             create_steal_file(beatmap_file_path, self.songs_dir)
             showinfo(parent=self.root, title="Done!",
                      message="Finished creating sharable beatmap file, the file should be waiting for you after you close this window\nGive this to other people for them to download your beatmaps!")
-            showinfo(parent=self.root, title="Done!", message="RECOMMENDED: refresh your osu! by clicking F5 while in song selection")
             self.root.destroy()
 
     @button_callback
@@ -126,11 +125,10 @@ class StealerApp:
             except ConnectionError:
                 showinfo(parent=self.root, title="No internet",
                          message="It seems like you aren't connected to the Internet.\nPlease connect and try again")
-                self.root.quit()
+                self.root.destroy()
             else:
                 showinfo(parent=self.root, title="Done!",
                          message="Finished downloading the beatmaps you didn't already have!")
-                showinfo(parent=self.root, title="Done!", message="RECOMMENDED: refresh your osu! by clicking F5 while in song selection")
                 self.root.destroy()
 
     @button_callback
@@ -139,7 +137,8 @@ class StealerApp:
         delete(self.songs_dir, {"std": self.std.get(), "mania": self.mania.get(), "ctb": self.ctb.get(), "taiko": self.taiko.get()}, self.download_video)
         showinfo(parent=self.root, title="Done!",
                  message="Finished removing all videos and other game modes!")
-        self.root.quit()
+        showinfo(parent=self.root, title="Done!", message="RECOMMENDED: refresh your osu! by clicking F5 while in song selection")
+        self.root.destroy()
 
 
 def main():
