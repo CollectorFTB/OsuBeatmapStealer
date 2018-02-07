@@ -21,13 +21,12 @@ def delete(songs_dir, game_modes, download_video):
             mode_nums.append(modes.index(key))
 
     if mode_nums:
-        d = False
-        for beatmap in tqdm(listdir(songs_dir), unit=' Beatmap', ncols=100, desc='Bad Maps Deleted', total=len(listdir(songs_dir))):
+        for beatmap in tqdm(listdir(songs_dir), unit=' Beatmap', ncols=100, desc='Deleting bad maps', total=len(listdir(songs_dir)), mininterval=0.2):
             beatmaps_to_delete = list()
             osu_files = (file for file in listdir(join(songs_dir, beatmap)) if file.endswith('.osu'))
             for file in osu_files:
                 try:
-                    with open(join(songs_dir, beatmap, file), 'r') as f:
+                    with open(join(songs_dir, beatmap, file), 'r', encoding='utf-8') as f:
                         for line in f:
                             line = line.strip()
                             if line in ["[Metadata]", "[Editor]"]:
@@ -37,7 +36,7 @@ def delete(songs_dir, game_modes, download_video):
                                     beatmaps_to_delete.append(join(songs_dir, beatmap, file))
                                 break
                 except UnicodeDecodeError:
-                    print(file)
+                    pass
             for bad_beatmap in beatmaps_to_delete:
                 remove(bad_beatmap)
 

@@ -1,5 +1,6 @@
 from steal import steal, create_steal_file
 from download import download_beatmaps
+from delete import delete
 from path_helper import get_path
 from os.path import join, splitext
 from logging import exception, basicConfig, DEBUG
@@ -8,7 +9,6 @@ from tkinter.messagebox import askyesno, showinfo, showerror
 from tkinter import Tk, Button, Label, Entry, W, E, S, N, END, Checkbutton, BooleanVar
 from requests.exceptions import ConnectionError
 from functools import wraps, partial
-from delete import delete
 from threading import Thread
 
 
@@ -96,6 +96,7 @@ class StealerApp:
 
         return on_click
 
+    @button_callback
     @needs_songs_dir
     def create_steal_file(self):
         showinfo(parent=self.root, title="File select",
@@ -110,6 +111,7 @@ class StealerApp:
             showinfo(parent=self.root, title="Done!", message="RECOMMENDED: refresh your osu! by clicking F5 while in song selection")
             self.root.destroy()
 
+    @button_callback
     @needs_songs_dir
     def steal_beatmaps(self):
         showinfo(parent=self.root, title="beatmap file",
@@ -131,6 +133,7 @@ class StealerApp:
                 showinfo(parent=self.root, title="Done!", message="RECOMMENDED: refresh your osu! by clicking F5 while in song selection")
                 self.root.destroy()
 
+    @button_callback
     @needs_songs_dir
     def delete_maps(self):
         delete(self.songs_dir, {"std": self.std.get(), "mania": self.mania.get(), "ctb": self.ctb.get(), "taiko": self.taiko.get()}, self.download_video)
