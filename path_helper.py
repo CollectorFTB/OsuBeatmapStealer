@@ -1,10 +1,6 @@
 from os.path import dirname
+from sys import executable as exec_path
 
 
 def get_path():
-    # get path and save it for later
-    path = dirname(__file__)
-    # get path of the OsuBeatmapStealer directory
-    inner_path = path[:path.find('OsuBeatmapStealer') + len('OsuBeatmapStealer')]
-
-    return inner_path
+    return dirname(exec_path)
