@@ -104,7 +104,7 @@ class StealerApp:
         beatmap_file_path = asksaveasfilename(parent=self.root, filetypes=[("Txt File", "*.txt")],
                                               initialdir=self.initial_dir, title="Your beatmap file", initialfile="beatmaps.txt")
         beatmap_file_path = force_txt_ext(beatmap_file_path)
-        if check_path(beatmap_file_path):
+        if check_path(beatmap_file_path) and path is not '.txt':
             create_steal_file(beatmap_file_path, self.songs_dir)
             showinfo(parent=self.root, title="Done!",
                      message="Finished creating sharable beatmap file, the file should be waiting for you after you close this window\nGive this to other people for them to download your beatmaps!")
