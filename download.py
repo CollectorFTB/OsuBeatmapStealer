@@ -6,6 +6,8 @@ from zipfile import ZipFile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from requests import Session, HTTPError
 from tqdm import tqdm
+from typing import Type
+from auth import Authenticator, LocalAuthenticator, DummyAuthenticator
 
 
 def change_format(line):
@@ -31,24 +33,16 @@ def download_beatmaps(my_beatmap_numbers, other_beatmaps_path, songs_dir, downlo
 
 
 class OsuSession:
-    def __init__(self, songs_dir):
+    def __init__(self, songs_dir: str, authenticator_cls: Type[Authenticator] = None):
         self.osu = "https://osu.ppy.sh"
         self.songs_dir = songs_dir
         self.session = Session()
         self._form = {"username": "dummyosu", "password": "rEqUEsts12"}
+        self.authenticator = authenticator_cls or DummyAuthenticator(self.session)
         self._login()
 
     def _login(self):
-        self.session.get(self._endpoint("home"))  # get XSRF-TOKEN to prove we're not a malicious phishing program
-        self.session.post(self._endpoint("session"), data=self.form)
-
-    @property
-    def form(self):
-        self._refresh_form()
-        return self._form
-
-    def _refresh_form(self):
-        self._form['_token'] = self.session.cookies['XSRF-TOKEN']
+        self.authenticator.login()
 
     def _endpoint(self, *args):
         ret = "/".join([self.osu] + list(args))
