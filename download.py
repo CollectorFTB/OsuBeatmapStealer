@@ -37,8 +37,8 @@ class OsuSession:
         self.osu = "https://osu.ppy.sh"
         self.songs_dir = songs_dir
         self.session = Session()
-        self._form = {"username": "dummyosu", "password": "rEqUEsts12"}
-        self.authenticator = authenticator_cls or DummyAuthenticator(self.session)
+        authenticator_cls: Type[Authenticator] = authenticator_cls or LocalAuthenticator
+        self.authenticator = authenticator_cls(self.session)
         self._login()
 
     def _login(self):

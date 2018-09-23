@@ -1,6 +1,6 @@
 import abc
 import requests
-
+import browser_cookie3
 
 class Authenticator(abc.ABC):
     def __init__(self, session: requests.Session):
@@ -32,4 +32,5 @@ class DummyAuthenticator(Authenticator):
         self._form['_token'] = self.session.cookies['XSRF-TOKEN']
     
 class LocalAuthenticator(Authenticator):
-    pass
+    def login(self):
+        self.session.cookies = browser_cookie3.load()
