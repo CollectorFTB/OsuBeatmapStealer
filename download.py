@@ -44,8 +44,11 @@ class OsuSession:
 
     @property
     def form(self):
-        self._refresh_form()
-        return self._form
+        try:
+            self._refresh_form()
+            return self._form
+        except:
+            return None
 
     def _refresh_form(self):
         self._form['_token'] = self.session.cookies['XSRF-TOKEN']
